@@ -1,5 +1,6 @@
 package com.example.techiteasyspringhomework.models;
 
+@MappedSuperclass
 public abstract class Product {
 
     // make id int generated as identity?
