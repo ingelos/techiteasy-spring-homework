@@ -1,17 +1,32 @@
 package com.example.techiteasyspringhomework.models;
+import jakarta.persistence.*;
 
 @MappedSuperclass
 public abstract class Product {
 
-    // make id int generated as identity?
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String brand;
-    private double price;
-    private int currentStock;
+    private Double price;
+    private int originalStock;
     private int sold;
 
-    public int getId() {
+    public Product(Long id, String name, String brand, Double price, int originalStock, int sold) {
+        this.id = id;
+        this.name = name;
+        this.brand = brand;
+        this.price = price;
+        this.originalStock = originalStock;
+        this.sold = sold;
+    }
+
+    public Product() {
+
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -39,12 +54,12 @@ public abstract class Product {
         this.price = price;
     }
 
-    public int getCurrentStock() {
-        return currentStock;
+    public int getOriginalStock() {
+        return originalStock;
     }
 
-    public void setCurrentStock(int currentStock) {
-        this.currentStock = currentStock;
+    public void setOriginalStock(int originalStock) {
+        this.originalStock = originalStock;
     }
 
     public int getSold() {
@@ -54,4 +69,6 @@ public abstract class Product {
     public void setSold(int sold) {
         this.sold = sold;
     }
+
+
 }
