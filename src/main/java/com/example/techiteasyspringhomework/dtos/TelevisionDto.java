@@ -1,13 +1,16 @@
-package com.example.techiteasyspringhomework.models;
+package com.example.techiteasyspringhomework.dtos;
 
 import com.example.techiteasyspringhomework.enums.AvailableSize;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "televisions")
-public class Television extends Product {
+public class TelevisionDto {
 
+
+    private Long id;
+    private String name;
+    private String brand;
+    private Double price;
+    private int originalStock;
+    private int sold;
     private String type;
     private AvailableSize availableSize;
     private int refreshRate;
@@ -20,25 +23,54 @@ public class Television extends Product {
     private boolean bluetooth;
     private boolean ambiLight;
 
-    public Television(Long id, String name, String brand, Double price, int originalStock, int sold, String type, AvailableSize availableSize, int refreshRate, String screenType, String screenQuality, boolean smartTv, boolean wifi, boolean voiceControl, boolean hdr, boolean bluetooth, boolean ambiLight) {
-        super(id, name, brand, price, originalStock, sold);
-        this.type = type;
-        this.availableSize = availableSize;
-        this.refreshRate = refreshRate;
-        this.screenType = screenType;
-        this.screenQuality = screenQuality;
-        this.smartTv = smartTv;
-        this.wifi = wifi;
-        this.voiceControl = voiceControl;
-        this.hdr = hdr;
-        this.bluetooth = bluetooth;
-        this.ambiLight = ambiLight;
+
+    public Long getId() {
+        return id;
     }
 
-    public Television() {
-
+    public void setId(Long id) {
+        this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public int getOriginalStock() {
+        return originalStock;
+    }
+
+    public void setOriginalStock(int originalStock) {
+        this.originalStock = originalStock;
+    }
+
+    public int getSold() {
+        return sold;
+    }
+
+    public void setSold(int sold) {
+        this.sold = sold;
+    }
 
     public String getType() {
         return type;
@@ -75,6 +107,7 @@ public class Television extends Product {
     public String getScreenQuality() {
         return screenQuality;
     }
+
     public void setScreenQuality(String screenQuality) {
         this.screenQuality = screenQuality;
     }
