@@ -1,10 +1,12 @@
 package com.example.techiteasyspringhomework.services;
 
-import com.example.techiteasyspringhomework.dtos.TelevisionDto;
-import com.example.techiteasyspringhomework.dtos.TelevisionInputDto;
-import com.example.techiteasyspringhomework.dtos.TelevisionMapper;
+import com.example.techiteasyspringhomework.dtos.mappers.CIModuleMapper;
+import com.example.techiteasyspringhomework.dtos.outputDtos.TelevisionOutputDto;
+import com.example.techiteasyspringhomework.dtos.inputDtos.TelevisionInputDto;
+import com.example.techiteasyspringhomework.dtos.mappers.TelevisionMapper;
 import com.example.techiteasyspringhomework.exceptions.RecordNotFoundException;
 import com.example.techiteasyspringhomework.models.Television;
+import com.example.techiteasyspringhomework.repositories.CIModuleRepository;
 import com.example.techiteasyspringhomework.repositories.TelevisionRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,31 +19,36 @@ import java.util.Optional;
 public class TelevisionService {
 
     private final TelevisionRepository televisionRepository;
+    private final CIModuleRepository ciModuleRepository;
 
-    public TelevisionService(TelevisionRepository televisionRepository) {
+    public TelevisionService(TelevisionRepository televisionRepository, CIModuleRepository ciModuleRepository) {
         this.televisionRepository = televisionRepository;
+        this.ciModuleRepository = ciModuleRepository;
     }
 
-    public TelevisionDto createTelevision(TelevisionInputDto televisionInputDto) {
+    public TelevisionOutputDto createTelevision(TelevisionInputDto televisionInputDto) {
         Television t = televisionRepository.save(TelevisionMapper.fromInputDtoToModel(televisionInputDto));
             return TelevisionMapper.fromModelToDto(t);
     }
 
-    public List<TelevisionDto> getAllTelevisions() {
+    public List<TelevisionOutputDto> getAllTelevisions() {
         List<Television> allTelevisions = televisionRepository.findAll();
-        List<TelevisionDto> televisionDtos = new ArrayList<>();
+        List<TelevisionOutputDto> televisionDtos = new ArrayList<>();
         for (Television t : allTelevisions) {
             televisionDtos.add(TelevisionMapper.fromModelToDto(t));
         }
         return televisionDtos;
     }
 
-    public TelevisionDto getTelevisionById(Long id) {
-        Optional<Television> t = televisionRepository.findById(id);
-        if (t.isPresent()) {
-            return TelevisionMapper.fromModelToDto(t.get());
+    public TelevisionOutputDto getTelevisionById(Long id) {
+        if(televisionRepository.findById(id).isPresent()) {
+            Television television = televisionRepository.findById(id).get();
+            TelevisionOutputDto dto = TelevisionMapper.fromModelToDto(television);
+            if (television.getCiModule() != null) {
+                dto.setCiModuleOutputDto(CIModuleMapper.fromModelToDto(television.getCiModule()));
+            } return TelevisionMapper.fromModelToDto(television);
         } else {
-            throw new RecordNotFoundException(("No television found with id: " + id));
+            throw new RecordNotFoundException("No tv found.");
         }
     }
 
@@ -49,7 +56,7 @@ public class TelevisionService {
         televisionRepository.deleteById(id);
     }
 
-    public TelevisionDto updateTelevision(Long id, TelevisionInputDto updatedTelevision) {
+    public TelevisionOutputDto updateTelevision(Long id, TelevisionInputDto updatedTelevision) {
         Optional<Television> t = televisionRepository.findById(id);
         if (t.isPresent()) {
 
@@ -79,4 +86,18 @@ public class TelevisionService {
         }
     }
 
+    public void assignCIModuleToTelevision(Long id, Long ciModuleId) {
+        var optionalTelevision = televisionRepository.findById(id);
+        var optionalCIModule = ciModuleRepository.findById(ciModuleId);
+
+        if(optionalTelevision.isPresent() && optionalCIModule.isPresent()) {
+            var television = optionalTelevision.get();
+            var ciModule = optionalCIModule.get();
+
+            television.setCiModule(ciModule);
+            televisionRepository.save(television);
+        } else {
+            throw new RecordNotFoundException();
+        }
+    }
 }

@@ -1,7 +1,7 @@
 package com.example.techiteasyspringhomework.controllers;
 
-import com.example.techiteasyspringhomework.dtos.TelevisionDto;
-import com.example.techiteasyspringhomework.dtos.TelevisionInputDto;
+import com.example.techiteasyspringhomework.dtos.outputDtos.TelevisionOutputDto;
+import com.example.techiteasyspringhomework.dtos.inputDtos.TelevisionInputDto;
 import com.example.techiteasyspringhomework.models.Television;
 import com.example.techiteasyspringhomework.services.TelevisionService;
 import jakarta.validation.Valid;
@@ -25,20 +25,20 @@ public class TelevisionController {
     }
 
     @PostMapping
-    public ResponseEntity<TelevisionDto> createTelevision(@Valid @RequestBody TelevisionInputDto televisionInputDto) {
-        TelevisionDto t = televisionService.createTelevision(televisionInputDto);
+    public ResponseEntity<TelevisionOutputDto> createTelevision(@Valid @RequestBody TelevisionInputDto televisionInputDto) {
+        TelevisionOutputDto t = televisionService.createTelevision(televisionInputDto);
         URI uri = URI.create(ServletUriComponentsBuilder
                     .fromCurrentRequest().path("/" + t.getId()).toUriString());
         return ResponseEntity.created(uri).body(t);
         }
 
     @GetMapping
-    public ResponseEntity<List<TelevisionDto>> getAllTelevisions() {
+    public ResponseEntity<List<TelevisionOutputDto>> getAllTelevisions() {
             return ResponseEntity.ok().body(televisionService.getAllTelevisions());
         }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TelevisionDto> getTelevision(@PathVariable("id") Long id) {
+    public ResponseEntity<TelevisionOutputDto> getTelevisionById(@PathVariable("id") Long id) {
             return ResponseEntity.ok().body(televisionService.getTelevisionById(id));
         }
 
@@ -49,12 +49,21 @@ public class TelevisionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TelevisionDto> updateTelevision(@PathVariable("id") Long id, @Valid @RequestBody TelevisionInputDto updatedTelevision) {
-        TelevisionDto t = televisionService.updateTelevision(id, updatedTelevision);
+    public ResponseEntity<TelevisionOutputDto> updateTelevision(@PathVariable("id") Long id, @Valid @RequestBody TelevisionInputDto updatedTelevision) {
+        TelevisionOutputDto t = televisionService.updateTelevision(id, updatedTelevision);
             return ResponseEntity.ok().body(t);
         }
+
+    // andere entiteiten toevoegen aan Television
+
+    @PutMapping("/{id}/{ciModuleId}")
+    public ResponseEntity<Object> assignCIModuleToTelevision(@PathVariable("id") Long id, @PathVariable("ciModuleId") Long ciModuleId) {
+        televisionService.assignCIModuleToTelevision(id, ciModuleId);
+        return ResponseEntity.noContent().build();
     }
 
+
+}
 
 
 
