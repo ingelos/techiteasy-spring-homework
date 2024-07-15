@@ -3,12 +3,12 @@ package com.example.techiteasyspringhomework.services;
 import com.example.techiteasyspringhomework.dtos.inputDtos.UserInputDto;
 import com.example.techiteasyspringhomework.dtos.mappers.UserMapper;
 import com.example.techiteasyspringhomework.dtos.outputDtos.UserOutputDto;
-import com.example.techiteasyspringhomework.exceptions.RecordNotFoundException;
 import com.example.techiteasyspringhomework.exceptions.UsernameNotFoundException;
 import com.example.techiteasyspringhomework.models.Authority;
 import com.example.techiteasyspringhomework.models.User;
 import com.example.techiteasyspringhomework.repositories.UserRepository;
 import com.example.techiteasyspringhomework.utils.RandomStringGenerator;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,9 +20,12 @@ import java.util.Set;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
     public List<UserOutputDto> getUsers() {
         List<UserOutputDto> collection = new ArrayList<>();
@@ -51,6 +54,7 @@ public class UserService {
     public String createUser(UserInputDto userInputDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         userInputDto.setApikey(randomString);
+        userInputDto.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
         User newUser = userRepository.save(UserMapper.fromInputToModel(userInputDto));
         return newUser.getUsername();
     }

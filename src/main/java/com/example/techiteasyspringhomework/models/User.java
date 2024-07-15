@@ -21,14 +21,6 @@ public class User {
     @Setter
     private String password;
 
-    @OneToMany
-            (targetEntity = Authority.class,
-            mappedBy = "username",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    private Set<Authority> authorities = new HashSet<>();
-
     @Column
     @Setter
     private String apikey;
@@ -36,6 +28,16 @@ public class User {
     @Column
     @Setter
     private String email;
+
+
+
+    @OneToMany
+            (targetEntity = Authority.class,
+                    mappedBy = "username",
+                    cascade = CascadeType.ALL,
+                    orphanRemoval = true,
+                    fetch = FetchType.EAGER)
+    private Set<Authority> authorities = new HashSet<>();
 
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);
